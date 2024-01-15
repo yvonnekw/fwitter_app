@@ -1,34 +1,58 @@
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../../../redux/Store'
+import { incrementStep } from '../../../../redux/slices/RegisterSlices';
 import './RegisterFormOne.css';
-import { TextInput } from '../textInput/TextInput';
+import { validateName } from '../../../../services/Validators';
+import { ValidatedInput } from '../../../../components/validatedInput/ValidatedInput';
+import { RegisterDateInput } from '../registerDateInput/RegisterDateInput';
+import { RegisterNameInputs } from '../registerNameInput/RegisterNameInputs';
+import { RegisterEmailInput } from '../registerEmailInput/RegisterEmailInput';
+import { StyledNextButton } from '../registerNextButton/RegisterNextButton';
 
-
-interface FormOneState {
-  firstName: string;
-  lastName: string;
-  email: string;
-  mainTelephone: string;
-}
 
 export const RegisterFormOne:React.FC = () => {
 
-  const [stepOneState, setStepOneState] = useState<FormOneState>({
-    firstName: "",
-    lastName: "string",
-    email: "string",
-    mainTelephone: "string"
-  });
+  const registerState = useSelector((state:RootState) => state.register);
+  const dispatch:AppDispatch = useDispatch();
 
-  const updateUser = (e:React.ChangeEvent<HTMLInputElement>): void => {
-    
+  const [buttonActive, setButtonActive] = useState<boolean>(false);
+
+  const nextPage = () => {
+    dispatch(incrementStep());
   }
+
+
+  useEffect (() => {
+    if(registerState.dobValid && registerState.emailValid && registerState.firstNameValid && registerState.lastNameValid){
+      setButtonActive(true);
+    } else {
+      setButtonActive(false);
+    }
+  }, [registerState])
+  
   return (
-    <div className="reg-step-one-container" data-testId ="reg-step-one-container">
+    <div className="reg-step-one-container">
         <div className="reg-step-one-content">
-            User input area for reg one
-        </div>
-      
+          <h1 className="reg-step-one-header">Create your account</h1>
+          <RegisterNameInputs firstName={registerState.firstName} lastName={registerState.lastName} />
+           <RegisterEmailInput email={registerState.email}/>
+           <div className="reg-step-one-dob-disclaimer">
+              <p className="reg-step-one-dob-header">Date of birth</p>
+              <span className="reg-step-one-dob-text">
+                This will not be shown publicly.
+              </span>
+           </div>
+          <RegisterDateInput date={registerState.dob}/>
+        </div> 
+        <StyledNextButton
+            disabled = {!buttonActive}
+            color = {"black"}
+            active = {buttonActive}
+            onClick={nextPage}>
+            Next
+           </StyledNextButton>
     </div>
   )
 }
