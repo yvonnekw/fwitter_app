@@ -2,10 +2,10 @@
 import React, {useState, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../redux/Store'
-import { incrementStep } from '../../../../redux/slices/RegisterSlices';
+import { incrementStep, updateRegister } from '../../../../redux/slices/RegisterSlices';
 import './RegisterFormOne.css';
-import { validateName } from '../../../../services/Validators';
-import { ValidatedInput } from '../../../../components/validatedInput/ValidatedInput';
+//import { validateName } from '../../../../services/Validators';
+//import { ValidatedInput } from '../../../../components/validatedInput/ValidatedInput';
 import { RegisterDateInput } from '../registerDateInput/RegisterDateInput';
 import { RegisterNameInputs } from '../registerNameInput/RegisterNameInputs';
 import { RegisterEmailInput } from '../registerEmailInput/RegisterEmailInput';
@@ -14,16 +14,21 @@ import { StyledNextButton } from '../registerNextButton/RegisterNextButton';
 
 export const RegisterFormOne:React.FC = () => {
 
+  //register state
   const registerState = useSelector((state:RootState) => state.register);
   const dispatch:AppDispatch = useDispatch();
 
   const [buttonActive, setButtonActive] = useState<boolean>(false);
 
   const nextPage = () => {
+    dispatch(updateRegister({
+      name: "error",
+      value: false
+    }));
     dispatch(incrementStep());
   }
 
-
+//check the button active
   useEffect (() => {
     if(registerState.dobValid && registerState.emailValid && registerState.firstNameValid && registerState.lastNameValid){
       setButtonActive(true);
@@ -47,6 +52,7 @@ export const RegisterFormOne:React.FC = () => {
           <RegisterDateInput date={registerState.dob}/>
         </div> 
         <StyledNextButton
+        //put this back to !bottonActive
             disabled = {!buttonActive}
             color = {"black"}
             active = {buttonActive}

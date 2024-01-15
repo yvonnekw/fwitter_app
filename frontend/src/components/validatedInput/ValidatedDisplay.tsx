@@ -8,9 +8,10 @@ import './ValidatedInput.css';
 interface ValidatedDisplayProps {
     label:string;
     value:string;
+    valid?:boolean;
 }
 
-export const ValidatedDisplay:React.FC<ValidatedDisplayProps> = ({label, value}) => {
+export const ValidatedDisplay:React.FC<ValidatedDisplayProps> = ({label, value, valid}) => {
 
     const [focused, setFocused] = useState<boolean>(false);
 
@@ -26,12 +27,12 @@ export const ValidatedDisplay:React.FC<ValidatedDisplayProps> = ({label, value})
     }
     return (
         <div className='validate-input'>
-            <StyledInputBox active={false} valid={true}>
-                <StyledInputLabel color={focused ? 'blue' : 'gray'} active={focused}
+            <StyledInputBox active={false} valid={valid ? (!valid ? true : false) : true}>
+                <StyledInputLabel color={focused ? 'blue' : 'gray'} active={!focused}
                     valid={true}>
                         {label}
                     </StyledInputLabel>
-                    <input className='validated-input-value' onFocus={() => {}} value={value}/>
+                    <input className='validated-input-value' onFocus={focus} value={value}/>
 
             </StyledInputBox>
 

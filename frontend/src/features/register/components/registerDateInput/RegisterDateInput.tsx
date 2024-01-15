@@ -28,18 +28,19 @@ export const RegisterDateInput:React.FC<RegisterDateInputProps> = ({date}) =>{
 
     useEffect(() => {
 
-        let {day, month, year} = state.dob;
+        let {month, day, year} = state.dob;
 
-        if(day && month && year){
+        if(month && day  && year){
             setValid(validateDob({
                 month,
                 day,
                 year
             }));
+            dispatch(updateRegister({name:'dobValid', value:valid}));
         }
-        dispatch(updateRegister({name:'dobValid', value:valid}));
+     
 
-    }, [state.dob.day, state.dob.month, state.dob.year, state.dobValid, valid]);
+    }, [state.dob.month, state.dob.day, state.dob.year, state.dobValid, valid]);
 
     return (
     
