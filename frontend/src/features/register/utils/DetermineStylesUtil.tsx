@@ -97,7 +97,7 @@ export const determineStyledInputBorder = (props:StyledInputProps): string => {
 
     export const determineValidatedTextlabel = (active:boolean, valid:boolean): string => {
         if(!valid && active){
-            return "error";
+            return 'error';
           }  
           if(active && active){
             return 'blue'

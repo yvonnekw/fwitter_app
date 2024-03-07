@@ -1,6 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Dob } from "../../features/register/utils/GlobalInterfaces";
+import axios from "axios";
 
+//stare info about the register user
 
 interface RegisterSliceState {
     loading: boolean;
@@ -16,11 +18,19 @@ interface RegisterSliceState {
     step: number;
 }
 
-interface updatePayload {
+interface UpdatePayload {
     name: string;
     value: string | number | boolean;
 }
 
+interface RegisterUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    dob: string;
+}
+
+//before we validate everything should be false
 const initialState:RegisterSliceState = {
     loading: false,
     error: false,
@@ -29,7 +39,7 @@ const initialState:RegisterSliceState = {
     lastName: '',
     lastNameValid: false,
     email: '',
-    emailValid: false,
+    emailValid: true,
     dob: {
         month: 0,
         day: 0,
@@ -39,11 +49,24 @@ const initialState:RegisterSliceState = {
     step: 1
 }
 
+export const registerUser = createAsyncThunk(
+    'register/register',
+    async (user:RegisterUser, thunkAPI) => {
+        try {
+            const req = await axios.post('http://localhost:8000/auth/register', user);
+            return await req.data;
+        } catch(e) {
+            return thunkAPI.rejectWithValue(e);
+        }
+
+    }
+)
+
 export const RegisterSlice = createSlice ({
    name: "register",
    initialState,
    reducers: {
-        updateRegister(state, action:PayloadAction<updatePayload>){
+        updateRegister(state, action:PayloadAction<UpdatePayload>){
             let {name, value} = action.payload;
 
             if(name === 'month' || name === 'day' || name === 'year'){
@@ -62,7 +85,7 @@ export const RegisterSlice = createSlice ({
                     [name]: value
                 }
             }
-            console.log("updating global register state: " + state)
+            console.log("updating global register state: ", state)
             return state;
         },
         incrementStep(state){
@@ -77,9 +100,27 @@ export const RegisterSlice = createSlice ({
                 state.step--;
                 return state;
             }
-        },
+        }
+   },
+   extraReducers: (builder) => {
+        builder.addCase(registerUser.pending, (state, action)=> {
+            state.loading =  true;
+            return state; 
+        });
 
-    
+        builder.addCase(registerUser.fulfilled, (state, action)=> {
+            state.loading = false;
+            state.error = false;
+            state.step++;
+            return state; 
+        });
+
+        builder.addCase(registerUser.rejected, (state, action)=> {
+            state.error = true;
+            state.loading = false;
+            return state; 
+        });
+
    } 
 })
 

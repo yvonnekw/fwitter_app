@@ -5,7 +5,7 @@ import { AppDispatch } from '../../../../redux/Store';
 import { updateRegister } from '../../../../redux/slices/RegisterSlices';
 import { validateEmail } from '../../../../services/Validators'
 import { ValidatedTextInput } from '../../../../components/validatedInput/ValidatedTextInput';
-import { ValidatedInput } from '../../../../components/validatedInput/ValidatedInput';
+//import { ValidatedInput } from '../../../../components/validatedInput/ValidatedInput';
 import './RegisterEmailInput.css'
 
 interface RegisterEmailInputProps {

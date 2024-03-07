@@ -37,6 +37,7 @@ export const ValidatedDateSelector:React.FC<ValidateDateSelectorProps> = ({data,
     useEffect(()=> {
         setColour(determineValidatedSelectStyle(active, valid))
     }, [active, valid, value])
+    
     return (
         <div className='validated-input'>
             <StyledInputBox active={active} valid={valid}>
